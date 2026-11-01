@@ -1,0 +1,94 @@
+name: Security scan
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      image_ref:
+        description: "Published image tag or digest to scan instead of building"
+        required: false
+        type: string
+        default: ""
+  workflow_call:
+    inputs:
+      image_ref:
+        description: "Published image tag or digest to scan instead of building"
+        required: false
+        type: string
+        default: ""
+    secrets:
+      USERNAME:
+        required: false
+      TOKEN:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  security-scan:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - architecture: amd64
+            runner: ubuntu-24.04
+          - architecture: arm64
+            runner: ubuntu-24.04-arm
+    env:
+      IMAGE_REF: ${{ inputs.image_ref || format('editor-{0}', matrix.architecture) }}
+      TRIVY_PLATFORM: linux/${{ matrix.architecture }}
+      # Lets Trivy pull a published image that isn't public yet.
+      TRIVY_USERNAME: ${{ secrets.USERNAME }}
+      TRIVY_PASSWORD: ${{ secrets.TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build runtime image
+        if: ${{ inputs.image_ref == '' }}
+        run: docker build --pull --provenance=false -t "$IMAGE_REF" .
+
+      - name: Check Nginx serves the editor
+        if: ${{ inputs.image_ref == '' }}
+        run: |
+          docker run --detach --name editor-smoke "$IMAGE_REF"
+          trap 'docker rm --force editor-smoke' EXIT
+          docker exec editor-smoke nginx -t
+          for attempt in {1..15}; do
+            if docker exec editor-smoke wget -q -O /dev/null http://127.0.0.1/healthz; then
+              docker exec editor-smoke wget -q -O - http://127.0.0.1/ | grep -q '<div id="root">'
+              exit 0
+            fi
+            sleep 1
+          done
+          docker logs editor-smoke
+          exit 1
+
+      - name: Report all image vulnerabilities
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
+        with:
+          version: v0.76.1
+          image-ref: ${{ env.IMAGE_REF }}
+          scanners: vuln
+          severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
+          ignore-unfixed: false
+          exit-code: "0"
+          timeout: 10m
+
+      - name: Block high or critical image findings
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # 0.35.0
+        with:
+          version: v0.76.1
+          skip-setup-trivy: true
+          image-ref: ${{ env.IMAGE_REF }}
+          scanners: vuln
+          severity: HIGH,CRITICAL
+          ignore-unfixed: false
+          exit-code: "1"
+          timeout: 10m
