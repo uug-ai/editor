@@ -4,7 +4,8 @@ import { describe, expect, it, vi } from 'vitest'
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8')
 const title = 'UUG.AI Editor | Online Video Trimmer'
-const url = 'https://edit.uug.lol/'
+const url = 'https://edit.uug.ai/'
+const hosts = [url, 'https://edit.uug.lol/', 'https://editor.uug.lol/']
 const script = readFileSync(new URL('../public/analytics.js', import.meta.url), 'utf8')
 const attributes = html.match(/<script id="analytics"([^>]*)>/)![1]
 const dataset = Object.fromEntries([...attributes.matchAll(/data-([a-z-]+)="([^"]*)"/g)]
@@ -102,7 +103,7 @@ describe('site metadata', () => {
 
   it('includes Learn-style consent controls and a deferred local controller', () => {
     expect(attributes).toContain('defer src="/analytics.js"')
-    expect(dataset).toMatchObject({ productionHost: 'edit.uug.lol', legacyHost: 'editor.uug.lol', cookiePrefix: 'edit' })
+    expect(dataset).toMatchObject({ productionHost: 'edit.uug.ai', stagingHost: 'edit.uug.lol', legacyHost: 'editor.uug.lol', cookiePrefix: 'edit' })
     expect(html).toContain('aria-labelledby="cookie-heading" hidden')
     expect(html).toContain('We use cookies')
     expect(html).toContain('Accept cookies')
@@ -113,7 +114,7 @@ describe('site metadata', () => {
 })
 
 describe('analytics', () => {
-  it.each([url, 'https://editor.uug.lol/'])('tracks %s without sending filenames, query strings or referrers', (host) => {
+  it.each(hosts)('tracks %s without sending filenames, query strings or referrers', (host) => {
     const { window, document } = analytics(`${host}?filename=private-video.mp4#secret`)
     const calls = window.dataLayer.map((entry) => Array.from(entry))
     expect(calls[0]).toEqual(['consent', 'default', {
@@ -159,19 +160,20 @@ describe('analytics', () => {
     expect(fixture.cookieWrites).toEqual([])
   })
 
-  it('persists rejection and clears only this app cookies on the current hostname', () => {
-    const fixture = analytics(url, { preference: 'granted' })
+  it.each(hosts)('persists rejection and clears only this app cookies on %s', (host) => {
+    const domain = new URL(host).hostname
+    const fixture = analytics(host, { preference: 'granted' })
     fixture.choose('denied')
     expect(fixture.localStorage.setItem).toHaveBeenCalledWith(consentKey, 'denied')
     expect(fixture.calls().at(-1)).toEqual(['consent', 'update', { analytics_storage: 'denied' }])
     expect(fixture.banner.hidden).toBe(true)
     expect(fixture.cookieWrites).toEqual([
       'edit_ga=; Max-Age=0; Path=/; Secure; SameSite=Lax',
-      'edit_ga=; Max-Age=0; Path=/; Secure; SameSite=Lax; Domain=edit.uug.lol',
+      `edit_ga=; Max-Age=0; Path=/; Secure; SameSite=Lax; Domain=${domain}`,
       'edit_ga_SESSION=; Max-Age=0; Path=/; Secure; SameSite=Lax',
-      'edit_ga_SESSION=; Max-Age=0; Path=/; Secure; SameSite=Lax; Domain=edit.uug.lol',
+      `edit_ga_SESSION=; Max-Age=0; Path=/; Secure; SameSite=Lax; Domain=${domain}`,
     ])
-    const restored = analytics(url, { preference: 'denied' })
+    const restored = analytics(host, { preference: 'denied' })
     expect(restored.banner.hidden).toBe(true)
     expect(restored.calls().filter((call) => call[1] === 'update')).toEqual([])
   })
@@ -238,7 +240,7 @@ describe('analytics', () => {
     expect(fixture.document.head.appendChild).toHaveBeenCalledOnce()
   })
 
-  it.each(['http://localhost:5176/', 'http://127.0.0.1:5176/', 'https://preview.uug.lol/', 'https://edit.uug.lol.example.com/', 'https://editor.uug.lol.example.com/', 'http://edit.uug.lol/', 'http://editor.uug.lol/'])(
+  it.each(['http://localhost:5176/', 'http://127.0.0.1:5176/', 'https://preview.uug.lol/', 'https://edit.uug.ai.example.com/', 'https://edit.uug.lol.example.com/', 'https://editor.uug.lol.example.com/', 'http://edit.uug.ai/', 'http://edit.uug.lol/', 'http://editor.uug.lol/'])(
     'does not track development or other hosts: %s', (location) => {
       const { window, document, banner, localStorage } = analytics(location)
       expect(window.dataLayer).toEqual([])

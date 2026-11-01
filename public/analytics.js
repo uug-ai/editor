@@ -2,9 +2,9 @@
 (() => {
   const script = document.currentScript;
   if (!script || window.__uugAppAnalytics) return;
-  const { measurementId, productionHost, legacyHost, cookiePrefix } = script.dataset;
+  const { measurementId, productionHost, stagingHost, legacyHost, cookiePrefix } = script.dataset;
   const host = window.location.hostname;
-  if (window.location.protocol !== 'https:' || ![productionHost, legacyHost].includes(host)) return;
+  if (window.location.protocol !== 'https:' || ![productionHost, stagingHost, legacyHost].includes(host)) return;
 
   const banner = document.querySelector('#cookie-banner');
   const status = document.querySelector('[data-analytics-status]');
