@@ -9,10 +9,15 @@ Cut, trim and create videos right in your browser. This first version trims: ope
 
 ## Navigation and appearance
 
-The top bar follows Learn's UUG styling, with the UUG logo and **Home** linking
-to <https://uug.ai/>, and theme and [UUG.AI GitHub](https://github.com/uug-ai)
-controls on the right. The current filename and **Open another** stay available
-when editing, wrapping onto a second row on small screens.
+The top bar matches Draw's compact, letter-spaced **UUG** wordmark linking to
+<https://uug.ai/>, header alignment, gradient accent, and dark header palette.
+[UUG.AI GitHub](https://github.com/uug-ai) comes first on the right, followed by
+the theme control at the far edge. Both have 44px touch targets, with 50px
+between their centers to match Website's compact spacing. The filled
+GitHub mark and circular animated sun/moon switch use Website/Learn's artwork
+and toggle styling; animations respect reduced-motion preferences.
+The current filename and **Open another** remain available when editing,
+wrapping onto a second row on small screens.
 
 The theme follows the system until you pick light or dark mode. Your choice is
 saved per origin under `editor.theme` and synchronized across tabs. Clearing the

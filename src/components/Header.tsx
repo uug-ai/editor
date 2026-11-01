@@ -8,10 +8,8 @@ export function Header({ fileName, onOpen }: { fileName: string | null; onOpen: 
     <header className="topbar">
       <nav className="topbar-inner" aria-label="Primary navigation" onKeyDown={(event) => event.stopPropagation()}>
         <a className="brand" href="https://uug.ai/" aria-label="UUG.AI homepage">
-          <img className="brand-logo" src="/uug-logo.svg" alt="" width="70" height="23" />
-          <span className="brand-product">Editor</span>
+          UUG
         </a>
-        <a className="topbar-link" href="https://uug.ai/">Home</a>
         {fileName && (
           <div className="file-context">
             <span className="file-name" title={fileName}>{fileName}</span>
@@ -22,16 +20,6 @@ export function Header({ fileName, onOpen }: { fileName: string | null; onOpen: 
           </div>
         )}
         <div className="topbar-actions">
-          <button
-            type="button"
-            className="topbar-icon"
-            aria-label="Toggle dark mode"
-            aria-pressed={theme === 'dark'}
-            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-            onClick={toggle}
-          >
-            {theme === 'dark' ? <MoonIcon /> : <SunIcon />}
-          </button>
           <a
             className="topbar-icon"
             href="https://github.com/uug-ai"
@@ -42,6 +30,19 @@ export function Header({ fileName, onOpen }: { fileName: string | null; onOpen: 
           >
             <GitHubIcon />
           </a>
+          <button
+            type="button"
+            className={`theme-toggle${theme === 'dark' ? ' is-dark' : ''}`}
+            aria-label="Toggle dark mode"
+            aria-pressed={theme === 'dark'}
+            title={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            onClick={toggle}
+          >
+            <span className="theme-toggle-thumb">
+              <SunIcon className="theme-toggle-sun" />
+              <MoonIcon className="theme-toggle-moon" />
+            </span>
+          </button>
         </div>
         {error && <p className="theme-status" role="status">{error}</p>}
       </nav>
