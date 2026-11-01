@@ -101,3 +101,28 @@ export function FilmIcon() {
     </Icon>
   )
 }
+
+export function SunIcon() {
+  return (
+    <Icon size={24}>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2" />
+    </Icon>
+  )
+}
+
+export function MoonIcon() {
+  return (
+    <Icon size={24}>
+      <path d="M21 12.79A9 9 0 0 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </Icon>
+  )
+}
+
+export function GitHubIcon() {
+  return (
+    <Icon size={24}>
+      <path d="M9 19c-4.3 1.3-4.3-2.2-6-2.7M15 22v-3.9a3.4 3.4 0 0 0-1-2.7c3.4-.4 7-1.7 7-7.5a5.9 5.9 0 0 0-1.6-4.1A5.5 5.5 0 0 0 19.3 0S18 0 15 1.6a14.3 14.3 0 0 0-6 0C6 0 4.7 0 4.7 0a5.5 5.5 0 0 0-.1 3.8A5.9 5.9 0 0 0 3 8c0 5.8 3.6 7.1 7 7.5a3.4 3.4 0 0 0-1 2.7V22" />
+    </Icon>
+  )
+}

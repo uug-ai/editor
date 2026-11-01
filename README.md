@@ -7,6 +7,19 @@ Cut, trim and create videos right in your browser. This first version trims: ope
 - **Trim:** drag the handles at either end of the clip, or move the playhead and press **Set start** (`I`) or **Set end** (`O`). Focus a handle to move it a frame at a time with the arrow keys. **Play** plays only the clip and stops at its end.
 - **Download:** **Trim video** cuts the clip and offers it as `<name>-trimmed.<ext>`, in the container of the original.
 
+## Navigation and appearance
+
+The top bar follows Learn's UUG styling, with the UUG logo and **Home** linking
+to <https://uug.ai/>, and theme and [UUG.AI GitHub](https://github.com/uug-ai)
+controls on the right. The current filename and **Open another** stay available
+when editing, wrapping onto a second row on small screens.
+
+The theme follows the system until you pick light or dark mode. Your choice is
+saved per origin under `editor.theme` and synchronized across tabs. Clearing the
+preference resumes the system theme. [public/theme.js](public/theme.js) restores
+it before the first paint; storage failures are logged and shown in the top bar,
+but the toggle and video editor remain usable.
+
 ## Branding, SEO and analytics
 
 [index.html](index.html) supplies the UUG.AI-prefixed title, description, canonical URL, social previews and WebApplication structured data. The tab keeps the UUG.AI prefix when a video is opened. The UUG favicon and touch icons in [public](public) are copied from the UUG.AI website and included in the Docker build.

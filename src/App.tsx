@@ -1,17 +1,16 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ChangeEvent, DragEvent } from 'react'
 import { DropZone } from './components/DropZone'
+import { Header } from './components/Header'
 import { ExportBar } from './components/ExportBar'
 import type { Job } from './components/ExportBar'
 import {
-  FilmIcon,
   MarkInIcon,
   MarkOutIcon,
   PauseIcon,
   PlayIcon,
   StepBackIcon,
   StepForwardIcon,
-  UploadIcon,
 } from './components/icons'
 import { Timeline } from './components/Timeline'
 import { filmstrip, probe, trim } from './media'
@@ -259,23 +258,7 @@ export function App() {
         if (dropped) openFile(dropped)
       }}
     >
-      <header className="topbar">
-        <span className="brand">
-          <FilmIcon />
-          Editor
-        </span>
-        {file && (
-          <>
-            <span className="file-name" title={file.name}>
-              {file.name}
-            </span>
-            <button className="button" onClick={choose}>
-              <UploadIcon size={18} />
-              Open another
-            </button>
-          </>
-        )}
-      </header>
+      <Header fileName={file?.name ?? null} onOpen={choose} />
 
       <main className={`stage${file ? '' : ' empty'}`}>
         {!file && <DropZone onOpen={choose} />}
