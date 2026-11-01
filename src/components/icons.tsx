@@ -1,14 +1,17 @@
 import type { ReactNode } from 'react'
 
-function Icon({ children, size = 20 }: { children: ReactNode; size?: number }) {
+function Icon({ children, size = 20, className, strokeWidth = 1.8 }: {
+  children: ReactNode; size?: number; className?: string; strokeWidth?: number
+}) {
   return (
     <svg
       viewBox="0 0 24 24"
+      className={className}
       width={size}
       height={size}
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
@@ -102,27 +105,27 @@ export function FilmIcon() {
   )
 }
 
-export function SunIcon() {
+export function SunIcon({ className }: { className?: string } = {}) {
   return (
-    <Icon size={24}>
+    <Icon className={className} strokeWidth={2}>
       <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2" />
+      <path d="M12 2V5M12 19V22M4 12H1M23 12H20M5.64 5.64L3.52 3.52M20.48 20.48L18.36 18.36M5.64 18.36L3.52 20.48M20.48 3.52L18.36 5.64" />
     </Icon>
   )
 }
 
-export function MoonIcon() {
+export function MoonIcon({ className }: { className?: string } = {}) {
   return (
-    <Icon size={24}>
-      <path d="M21 12.79A9 9 0 0 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    <Icon className={className} strokeWidth={2}>
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
     </Icon>
   )
 }
 
 export function GitHubIcon() {
   return (
-    <Icon size={24}>
-      <path d="M9 19c-4.3 1.3-4.3-2.2-6-2.7M15 22v-3.9a3.4 3.4 0 0 0-1-2.7c3.4-.4 7-1.7 7-7.5a5.9 5.9 0 0 0-1.6-4.1A5.5 5.5 0 0 0 19.3 0S18 0 15 1.6a14.3 14.3 0 0 0-6 0C6 0 4.7 0 4.7 0a5.5 5.5 0 0 0-.1 3.8A5.9 5.9 0 0 0 3 8c0 5.8 3.6 7.1 7 7.5a3.4 3.4 0 0 0-1 2.7V22" />
-    </Icon>
+    <svg viewBox="3 3 18 18" width="24" height="24" fill="currentColor" aria-hidden="true">
+      <path d="M12 3C7.0275 3 3 7.12937 3 12.2276c0 4.0833 2.57625 7.5321 6.15374 8.7548C9.60374 21.0631 9.77249 20.7863 9.77249 20.5441 9.77249 20.3249 9.76125 19.5982 9.76125 18.8254 7.5 19.2522 6.915 18.2602 6.735 17.7412 6.63375 17.4759 6.19499 16.6569 5.8125 16.4378 5.4975 16.2647 5.0475 15.838 5.80124 15.8264 6.51 15.8149 7.01625 16.4954 7.18499 16.7723 7.99499 18.1679 9.28875 17.7758 9.80625 17.5335 9.885 16.9337 10.1212 16.53 10.38 16.2993 8.3775 16.0687 6.285 15.2728 6.285 11.7432c0-1.0035.34875-1.834.92249-2.47994C7.1175 9.03257 6.8025 8.08674 7.2975 6.81794c0 0 .753749999999999-.24223 2.47499.94583.72001-.20762 1.48501-.31143 2.25001-.31143C12.7875 7.45234 13.5525 7.55615 14.2725 7.76377c1.7212-1.19959 2.475-.94583 2.475-.94583C17.2424 8.08674 16.9275 9.03257 16.8375 9.26326 17.4113 9.9092 17.76 10.7281 17.76 11.7432c0 3.5411-2.1037 4.3255-4.1063 4.5561C13.98 16.5877 14.2613 17.1414 14.2613 18.0065 14.2613 19.2407 14.25 20.2326 14.25 20.5441 14.25 20.7863 14.4188 21.0746 14.8688 20.9824 16.6554 20.364 18.2079 19.1866 19.3078 17.6162c1.0999-1.5705 1.6917-3.4551 1.6922-5.3886C21 7.12937 16.9725 3 12 3z" />
+    </svg>
   )
 }

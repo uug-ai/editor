@@ -56,12 +56,10 @@ describe('theme before first paint', () => {
     expect(console.warn).toHaveBeenCalled()
   })
 
-  it('loads the bootstrap in the head before the app and includes the UUG logo', () => {
+  it('loads the bootstrap in the head before the app', () => {
     const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8')
     expect(html).toContain('<script src="/theme.js"></script>')
     expect(html.indexOf('<script src="/theme.js"></script>')).toBeLessThan(html.indexOf('</head>'))
-    expect(readFileSync(new URL('../public/uug-logo.svg', import.meta.url), 'utf8'))
-      .toContain('viewBox="0 0 342 109"')
   })
 })
 
@@ -72,15 +70,28 @@ function header(fileName: string | null = null, dark = false, error?: string) {
 }
 
 describe('primary navigation', () => {
-  it('links the UUG brand and Home to the homepage, and GitHub to the organisation', () => {
+  it('uses a compact UUG homepage wordmark and links GitHub to the organisation', () => {
     const html = header()
     expect(html).toContain('aria-label="Primary navigation"')
     expect(html).toContain('aria-label="UUG.AI homepage"')
-    expect(html).toContain('src="/uug-logo.svg"')
-    expect(html).toContain('href="https://uug.ai/">Home</a>')
+    expect(html).toContain('href="https://uug.ai/"')
+    expect(html).toContain('>UUG</a>')
+    expect(html).not.toContain('brand-logo')
+    expect(html).not.toContain('brand-product')
+    expect(html).not.toContain('>Home</a>')
     expect(html).toContain('href="https://github.com/uug-ai"')
     expect(html).toContain('target="_blank" rel="noopener noreferrer"')
+    expect(html).toContain('viewBox="3 3 18 18"')
+    expect(html).toContain('fill="currentColor"')
     expect(html).not.toContain('Open another')
+  })
+
+  it('places GitHub before the theme toggle in keyboard and visual order', () => {
+    const html = header()
+    const github = html.indexOf('aria-label="UUG.AI on GitHub"')
+    const theme = html.indexOf('aria-label="Toggle dark mode"')
+    expect(github).toBeGreaterThan(-1)
+    expect(theme).toBeGreaterThan(github)
   })
 
   it.each([false, true])('reports the current dark=%s theme accessibly', (dark) => {
@@ -88,6 +99,10 @@ describe('primary navigation', () => {
     expect(html).toContain('aria-label="Toggle dark mode"')
     expect(html).toContain(`aria-pressed="${dark}"`)
     expect(html).toContain(dark ? 'Switch to light mode' : 'Switch to dark mode')
+    expect(html).toContain(`class="theme-toggle${dark ? ' is-dark' : ''}"`)
+    expect(html).toContain('class="theme-toggle-thumb"')
+    expect(html).toContain('class="theme-toggle-sun"')
+    expect(html).toContain('class="theme-toggle-moon"')
   })
 
   it('retains the filename and open control while editing', () => {
