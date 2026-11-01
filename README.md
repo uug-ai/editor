@@ -29,9 +29,9 @@ but the toggle and video editor remain usable.
 
 [index.html](index.html) supplies the UUG.AI-prefixed title, description, canonical URL, social previews and WebApplication structured data. The tab keeps the UUG.AI prefix when a video is opened. The UUG favicon and touch icons in [public](public) are copied from the UUG.AI website and included in the Docker build.
 
-The canonical app URL is https://edit.uug.lol. The GitOps ingress retains `editor.uug.lol` as a compatibility alias, routed to the same application. Each hostname has its own TLS certificate.
+The canonical production app URL is https://edit.uug.ai. Staging remains at https://edit.uug.lol, with `editor.uug.lol` retained as its compatibility alias. Production and staging run in separate Kubernetes namespaces and have separate TLS certificates.
 
-Google Analytics runs only on `edit.uug.lol` and the `editor.uug.lol` compatibility alias, using the **Editor** web stream (`G-928MMDN0Q9`, stream ID `16247177565`) in the existing UUG.AI property (`540298183`). Local development and previews do not load the tag. Page measurements on both hosts use the fixed product title and `https://edit.uug.lol/` root URL with no referrer or query string; filenames and video contents are not sent. Enhanced measurement is disabled in the stream to prevent automatic file-download, form and video tracking; keep it disabled. Google signals and ad personalization are disabled in the tag. Videos are still processed entirely on your computer.
+Google Analytics runs only on `edit.uug.ai`, `edit.uug.lol` and the `editor.uug.lol` staging compatibility alias, using the **Editor** web stream (`G-928MMDN0Q9`, stream ID `16247177565`) in the existing UUG.AI property (`540298183`). Set the stream's website URL to `https://edit.uug.ai` when promoting production; keep its name and measurement ID unchanged. Local development and previews do not load the tag. Page measurements on all approved hosts use the fixed product title and `https://edit.uug.ai/` root URL with no referrer or query string; filenames and video contents are not sent. Enhanced measurement is disabled in the stream to prevent automatic file-download, form and video tracking; keep it disabled. Google signals and ad personalization are disabled in the tag. Videos are still processed entirely on your computer.
 
 The bottom-right **We use cookies** banner matches Learn's consent UI and policy: **Accept cookies**, **Reject cookies**, and a link to the privacy policy. [public/analytics.js](public/analytics.js) uses Consent Mode v2 advanced mode: the tag loads on approved HTTPS hosts with every consent type denied, sending only cookieless usage pings before acceptance and after rejection. Acceptance grants only `analytics_storage`; advertising consent always stays denied. One sanitized page view is sent per load, not again when choosing.
 
@@ -70,6 +70,14 @@ From the monorepo, **Editor: Launch Chrome** in VS Code starts the dev server an
 The [image](Dockerfile) serves the static build with Nginx on port 80, with `/healthz` for Kubernetes probes. Pull requests and pushes to `main` build it and scan it with Trivy.
 
 To release, run **Bump release** in GitHub Actions and choose which part of the version to bump. It tags the release, publishes `ghcr.io/uug-ai/editor:<tag>` for amd64 and arm64, and opens a pull request in [uug-ai/gitops](https://github.com/uug-ai/gitops) that deploys it to staging at https://edit.uug.lol once merged.
+
+Production is a separate, explicitly promoted deployment. After validating a release,
+update the pinned image in [production/editor/deployment.yaml](https://github.com/uug-ai/gitops/blob/main/environments/production/editor/deployment.yaml).
+The [editor-production Argo application](https://github.com/uug-ai/gitops/blob/main/environments/production-bijlokehof/argocd-application-editor.yaml)
+runs in namespace `uug-ai` on Bijlokehof, alongside Website and Learn.
+Production rollouts retain the ready pod until its replacement is ready.
+The `edit.uug.ai` DNS-only A record must point to `81.242.193.131`;
+the production ingress requests its own certificate through `letsencrypt-prod`.
 
 ## Keyboard shortcuts
 

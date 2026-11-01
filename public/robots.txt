@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://edit.uug.lol/sitemap.xml
+Sitemap: https://edit.uug.ai/sitemap.xml
