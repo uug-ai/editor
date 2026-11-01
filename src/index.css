@@ -75,6 +75,82 @@ button {
   display: none !important;
 }
 
+.cookie-banner {
+  position: fixed;
+  z-index: 60;
+  inset: auto 1rem 1rem;
+  max-width: 22rem;
+  max-height: calc(100dvh - 2rem);
+  overflow: auto;
+  margin-left: auto;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: var(--background);
+  color: var(--text-primary);
+  box-shadow: 0 12px 40px var(--shadow);
+}
+
+.cookie-banner[hidden],
+.cookie-banner [hidden] {
+  display: none;
+}
+
+.cookie-banner h2 {
+  margin-bottom: 0.5rem;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.cookie-banner p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.cookie-banner a {
+  color: var(--primary-color);
+}
+
+.cookie-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.cookie-action {
+  min-height: 36px;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--background);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.cookie-action:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.cookie-status {
+  margin-top: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .cookie-action {
+    min-height: 44px;
+  }
+}
+
+@media print {
+  .cookie-banner {
+    display: none;
+  }
+}
+
 .app {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

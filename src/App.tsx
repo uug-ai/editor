@@ -66,7 +66,7 @@ export function App() {
   const ready = file !== null && duration !== null && loadError === null
 
   useEffect(() => {
-    document.title = file ? `${file.name} · Editor` : 'Editor'
+    document.title = file ? `UUG.AI Editor | ${file.name}` : 'UUG.AI Editor | Online Video Trimmer'
   }, [file])
 
   useEffect(() => {

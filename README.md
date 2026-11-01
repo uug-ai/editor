@@ -7,6 +7,20 @@ Cut, trim and create videos right in your browser. This first version trims: ope
 - **Trim:** drag the handles at either end of the clip, or move the playhead and press **Set start** (`I`) or **Set end** (`O`). Focus a handle to move it a frame at a time with the arrow keys. **Play** plays only the clip and stops at its end.
 - **Download:** **Trim video** cuts the clip and offers it as `<name>-trimmed.<ext>`, in the container of the original.
 
+## Branding, SEO and analytics
+
+[index.html](index.html) supplies the UUG.AI-prefixed title, description, canonical URL, social previews and WebApplication structured data. The tab keeps the UUG.AI prefix when a video is opened. The UUG favicon and touch icons in [public](public) are copied from the UUG.AI website and included in the Docker build.
+
+The canonical app URL is https://edit.uug.lol. The GitOps ingress retains `editor.uug.lol` as a compatibility alias, routed to the same application. Each hostname has its own TLS certificate.
+
+Google Analytics runs only on `edit.uug.lol` and the `editor.uug.lol` compatibility alias, using the **Editor** web stream (`G-928MMDN0Q9`, stream ID `16247177565`) in the existing UUG.AI property (`540298183`). Local development and previews do not load the tag. Page measurements on both hosts use the fixed product title and `https://edit.uug.lol/` root URL with no referrer or query string; filenames and video contents are not sent. Enhanced measurement is disabled in the stream to prevent automatic file-download, form and video tracking; keep it disabled. Google signals and ad personalization are disabled in the tag. Videos are still processed entirely on your computer.
+
+The bottom-right **We use cookies** banner matches Learn's consent UI and policy: **Accept cookies**, **Reject cookies**, and a link to the privacy policy. [public/analytics.js](public/analytics.js) uses Consent Mode v2 advanced mode: the tag loads on approved HTTPS hosts with every consent type denied, sending only cookieless usage pings before acceptance and after rejection. Acceptance grants only `analytics_storage`; advertising consent always stays denied. One sanitized page view is sent per load, not again when choosing.
+
+Preferences use Learn's `uug-analytics-consent` local-storage key, separately per origin (including the compatibility alias). Cookies use the `edit` prefix and the current hostname; rejection clears only this app's accessible GA cookies, never Learn, Draw, or parent-domain cookies. Choices sync across tabs of the same origin. Storage and tag-load failures appear in the banner without blocking video editing. The banner stays hidden on localhost, HTTP and unapproved preview hosts; it has no permanent reopen control, matching Learn. Get privacy sign-off before changing this policy.
+
+When changing the deployed hostname, update the canonical/social/structured-data URLs, Analytics hostname guard and page location, sitemap, robots sitemap URL, and the stream URL together.
+
 ## How the cut works
 
 Trimming uses [Mediabunny](https://mediabunny.dev) (MPL-2.0), which reads and writes media files in the browser with WebCodecs ([src/media.ts](src/media.ts)).
@@ -37,7 +51,7 @@ From the monorepo, **Editor: Launch Chrome** in VS Code starts the dev server an
 
 The [image](Dockerfile) serves the static build with Nginx on port 80, with `/healthz` for Kubernetes probes. Pull requests and pushes to `main` build it and scan it with Trivy.
 
-To release, run **Bump release** in GitHub Actions and choose which part of the version to bump. It tags the release, publishes `ghcr.io/uug-ai/editor:<tag>` for amd64 and arm64, and opens a pull request in [uug-ai/gitops](https://github.com/uug-ai/gitops) that deploys it to staging at https://editor.uug.lol once merged.
+To release, run **Bump release** in GitHub Actions and choose which part of the version to bump. It tags the release, publishes `ghcr.io/uug-ai/editor:<tag>` for amd64 and arm64, and opens a pull request in [uug-ai/gitops](https://github.com/uug-ai/gitops) that deploys it to staging at https://edit.uug.lol once merged.
 
 ## Keyboard shortcuts
 

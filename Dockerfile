@@ -5,6 +5,7 @@ COPY package.json package-lock.json ./
 RUN npm ci
 COPY tsconfig.json vite.config.ts index.html ./
 COPY src/ ./src/
+COPY public/ ./public/
 # The trim tests need ffmpeg and are skipped here; the rest run before the build.
 RUN npm test && npm run build
 
